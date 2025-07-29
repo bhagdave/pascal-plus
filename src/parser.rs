@@ -5,6 +5,9 @@ use pest_derive::Parser;
 #[grammar = "grammar/pascal.pest"]
 pub struct PascalParser;
 
+pub use pest::iterators::Pairs;
+pub use pest::Parser as PestParser;
+
 pub fn parse_program(input: &str) {
     match PascalParser::parse(Rule::program, input) {
         Ok(pairs) => {

@@ -56,6 +56,14 @@ function_call_expr = {
 block = { "begin" ~ statement_list ~ "end" }
 
 expression = {
+      comparison
+}
+
+comparison = {
+      add_sub ~ ((">" | "<" | ">=" | "<=" | "=" | "<>") ~ add_sub)*
+}
+
+add_sub = {
       term ~ (("+" | "-") ~ term)*
 }
 

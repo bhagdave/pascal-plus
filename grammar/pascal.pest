@@ -1,0 +1,75 @@
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+COMMENT    = _{ "{" ~ (!"}" ~ ANY)* ~ "}" }
+
+identifier = @{ (ASCII_ALPHANUMERIC | "_")+ }
+number     = @{ ASCII_DIGIT+ }
+string     = @{ "\"" ~ (!"\"" ~ ANY)* ~ "\"" }
+
+program     = { SOI ~ "program" ~ identifier ~ ";" ~ statement_list ~ block ~ "." ~ EOI }
+statement_list = { statement* }
+
+statement   = _{
+      variable_decl
+    | assignment
+    | function_decl
+    | function_call
+    | if_statement
+    | while_statement
+    | return_statement
+}
+
+variable_decl = {
+      ("let" | "var") ~ identifier ~ ":" ~ type_name ~ ":=" ~ expression ~ ";"
+}
+
+assignment = {
+      identifier ~ ":=" ~ expression ~ ";"
+}
+
+function_decl = {
+      "function" ~ identifier ~ "(" ~ param_list? ~ ")" ~ ":" ~ type_name ~ block
+}
+
+param_list = { param_decl ~ ("," ~ param_decl)* }
+param_decl = { ("&")? ~ identifier ~ ":" ~ type_name }
+
+if_statement = {
+      "if" ~ expression ~ "then" ~ statement ~ ("else" ~ statement)?
+}
+
+while_statement = {
+      "while" ~ expression ~ "do" ~ statement
+}
+
+return_statement = {
+      "return" ~ expression ~ ";"
+}
+
+function_call = {
+      identifier ~ "(" ~ (expression ~ ("," ~ expression)*)? ~ ")" ~ ";"
+}
+
+function_call_expr = {
+      identifier ~ "(" ~ (expression ~ ("," ~ expression)*)? ~ ")"
+}
+
+block = { "begin" ~ statement_list ~ "end" }
+
+expression = {
+      term ~ (("+" | "-") ~ term)*
+}
+
+term = {
+      factor ~ (("*" | "/") ~ factor)*
+}
+
+factor = _{
+      number
+    | string
+    | function_call_expr
+    | identifier
+    | "(" ~ expression ~ ")"
+}
+
+type_name = { "Integer" | "String" | "Boolean" | "Unit" }
+
